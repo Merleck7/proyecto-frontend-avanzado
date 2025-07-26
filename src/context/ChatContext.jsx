@@ -1,30 +1,36 @@
-import { createContext, useContext, useReducer } from 'react'
+import { createContext, useContext, useReducer } from 'react';
 
-const ChatContext = createContext()
-
+// Estado inicial
 const initialState = {
   messages: [],
-}
+};
 
-function chatReducer(state, action) {
+// Acciones disponibles
+const chatReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_MESSAGE':
-      return { ...state, messages: [...state.messages, action.payload] }
+      return { ...state, messages: [...state.messages, action.payload] };
     case 'CLEAR_MESSAGES':
-      return { ...state, messages: [] }
+      return { ...state, messages: [] };
     default:
-      return state
+      return state;
   }
-}
+};
 
+// Crear contexto
+const ChatContext = createContext();
+
+// Custom hook para usar el contexto
+export const useChat = () => useContext(ChatContext);
+
+// Provider
 export const ChatProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(chatReducer, initialState)
+  const [state, dispatch] = useReducer(chatReducer, initialState);
 
   return (
-    <ChatContext.Provider value={{ state, dispatch }}>
+    <ChatContext.Provider value={{ ...state, dispatch }}>
       {children}
     </ChatContext.Provider>
-  )
-}
+  );
+};
 
-export const useChat = () => useContext(ChatContext)

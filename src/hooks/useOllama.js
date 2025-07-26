@@ -1,29 +1,31 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-export const useOllama = () => {
-  const [loading, setLoading] = useState(false)
+export function useOllama() {
+  const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = async (message) => {
-    setLoading(true)
+    setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:11434/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: 'devseek:1.1',
+          model: "mistral",
           prompt: message,
-        }),
-      })
+          stream: false
+        })
+      });
 
-      const data = await response.json()
-      return data.response
+      const data = await response.json();
+      console.log("Respuesta de Ollama:", data); // 👀 Verifica aquí
+      return data.response || "Sin respuesta del modelo.";
     } catch (error) {
-      console.error('Error al consultar Ollama:', error)
-      return 'Hubo un error.'
+      console.error("Error al consultar Ollama:", error);
+      return "Error al conectar con el modelo.";
     } finally {
-      setLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  return { sendMessage, loading }
+  return { sendMessage, isLoading };
 }
